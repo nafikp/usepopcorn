@@ -51,24 +51,32 @@ const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
+  const [movies, setMovies] = useState(tempMovieData); // Holds list of movies(initially from tempMovieData)
+
   return (
     <>
-      <NavBar />
-      <Main />
+      <NavBar>
+        <Logo />
+        <Search />
+        <NumResult movies={movies} />
+      </NavBar>
+
+      <Main>
+        <ListBox>
+          <MovieList movies={movies} />
+        </ListBox>
+        <WatchedBox />
+      </Main>
     </>
   );
 }
 
-function NavBar() {
-  return (
-    <nav className="nav-bar">
-      <Logo />
-      <Search />
-      <NumResult />
-    </nav>
-  );
+// Structural Component
+function NavBar({ children }) {
+  return <nav className="nav-bar">{children}</nav>;
 }
 
+// Presentational Component
 function Logo() {
   return (
     <div className="logo">
@@ -78,6 +86,7 @@ function Logo() {
   );
 }
 
+// Stateful Component
 function Search() {
   const [query, setQuery] = useState(""); // Stores search input text
   return (
@@ -91,25 +100,22 @@ function Search() {
   );
 }
 
-function NumResult() {
+// Presentational Component
+function NumResult({ movies }) {
   return (
     <p className="num-results">
-      Found <strong>X</strong> results
+      Found <strong>{movies.length}</strong> results
     </p>
   );
 }
 
-//Main
-function Main() {
-  return (
-    <main className="main">
-      <ListBox />
-      <WatchedBox />
-    </main>
-  );
+// Structural Component
+function Main({ children }) {
+  return <main className="main">{children}</main>;
 }
 
-function ListBox() {
+// Staeful Component
+function ListBox({ children }) {
   // Control whether the two UI sections are visible
   const [isOpen1, setIsOpen1] = useState(true);
 
@@ -121,14 +127,13 @@ function ListBox() {
       >
         {isOpen1 ? "–" : "+"}
       </button>
-      {isOpen1 && <MovieList />}
+      {isOpen1 && children}
     </div>
   );
 }
 
-function MovieList() {
-  const [movies, setMovies] = useState(tempMovieData); // Holds list of movies(initially from tempMovieData)
-
+// Stateful Components
+function MovieList({ movies }) {
   return (
     <ul className="list">
       {movies?.map((movie) => (
@@ -138,6 +143,7 @@ function MovieList() {
   );
 }
 
+// Presentational Component
 function Movie({ movie }) {
   return (
     <li>
@@ -153,6 +159,7 @@ function Movie({ movie }) {
   );
 }
 
+// Presentational Components...
 function WatchedBox() {
   const [watched, setWatched] = useState(tempWatchedData); // Stores list of watched movies
 
